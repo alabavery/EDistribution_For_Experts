@@ -11,7 +11,6 @@ def get_one_column_csv(csv_file_path):
 	return data_list
 
 
-
 def get_json_data(json_file_path):
 	file = open(json_file_path, 'r')
 	data = json.loads(file.read())
