@@ -1,6 +1,7 @@
 import config
 #import gmail
 
+
 def ten_new_addresses(email_address, unused_addresses, seen_email_data):
 	assert len(unused_addresses) > 9
 	addresses_to_send = unused_addresses[:10]
