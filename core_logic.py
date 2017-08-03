@@ -1,22 +1,36 @@
 import config
-import gmail
+#import gmail
 
 def ten_new_addresses(email_address, unused_addresses, seen_email_data):
 	addresses_to_send = unused_addresses[:10]
+	del unused_addresses[:10]
+	#gmail.send_addresses_email()
+	for entry in seen_email_data:
+		if entry['email_address'] == email_address:
+			entry['sent_voter_addresses'].extend(addresses_to_send)
+			return
+	
+	new_entry = {'email_address':email_address,'sent_voter_addresses':addresses_to_send}
+	seen_email_data.append(new_entry)
 
-
+ 
 def is_capitulation_text(text_content):
-	return text_content = config.CAPITULATION_TEXT
+	return text_content == config.CAPITULATION_TEXT
 
 
-def handle_capitulation(email_address):
+def handle_capitulation(email_address, unused_addresses, seen_email_data):
 	# gmail.send_capitulation_response(email_address)
-	# 
-	pass
+	for entry in seen_email_data:
+		if entry['email_address'] == email_address:
+			assert len(entry['sent_voter_addresses']) > 9
+			undone_addresses = entry['sent_voter_addresses'][-10:]
+			del entry['sent_voter_addresses'][-10:]
+			break
+	unused_addresses = undone_addresses + unused_addresses
 
 
 def send_to_manual_review(email_data):
-	pass
+	print('\n',"Got email from previous volunteer that did not have attachment and was not capitulation email:",'\n',email_data)
 
 
 def handle_email(email_data, unused_addresses, seen_email_data):
@@ -35,28 +49,6 @@ def handle_email(email_data, unused_addresses, seen_email_data):
 			ten_new_addresses(email_address, unused_addresses, seen_email_data)
 		else:
 			if is_capitulation_text(email_data['text_content']):
-				handle_capitulation(email_address)
+				handle_capitulation(email_address, unused_addresses, seen_email_data)
 			else:
 				send_to_manual_review(email_data)
-
-
-	"""
-	check if email_data['email_address'] is in seen_email_data
-		-- IF NOT (aka it's new address):
-		a. get 10 addresses from unused_addresses
-		b. add entry in seen_email_data
-		c. send email for sending 10 addresses
-		-- IF YES (aka it's seen before)
-		a. check if attachment
-			-- IF NOT:
-			1. check if text is "I can't complete" etc.
-				--IF NOT:
-				1. send to manual review
-				IF YES:
-				1. reply "thanks for letting us know" etc.
-				2. get [-10:] of entry's 'sent_voter_addresses'
-				3. add to beginning of of unused_addresses
-				4. del [-10:] of entry's 'sent_voter_addresses'
-			--IF YES:
-			1. same as new email
-	"""
