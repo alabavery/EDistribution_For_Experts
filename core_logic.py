@@ -28,6 +28,7 @@ def handle_capitulation(email_address, unused_addresses, seen_email_data):
 			del entry['sent_voter_addresses'][-10:]
 			break
 	unused_addresses = undone_addresses + unused_addresses
+	return unused_addresses, seen_email_data
 
 
 def send_to_manual_review(email_data):
@@ -47,10 +48,10 @@ def handle_email(email_data, unused_addresses, seen_email_data):
 		unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data)
 	else:
 		if email_data['has_attachment']:
-			ten_new_addresses(email_address, unused_addresses, seen_email_data)
+			unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data)
 		else:
 			if is_capitulation_text(email_data['text_content']):
-				handle_capitulation(email_address, unused_addresses, seen_email_data)
+				unused_addresses, seen_email_data = handle_capitulation(email_address, unused_addresses, seen_email_data)
 			else:
 				send_to_manual_review(email_data)
 
