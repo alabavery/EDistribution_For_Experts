@@ -12,6 +12,7 @@ def ten_new_addresses(email_address, unused_addresses, seen_email_data):
 	
 	new_entry = {'email_address':email_address,'sent_voter_addresses':addresses_to_send}
 	seen_email_data.append(new_entry)
+	return unused_addresses, seen_email_data
 
  
 def is_capitulation_text(text_content):
@@ -43,7 +44,7 @@ def handle_email(email_data, unused_addresses, seen_email_data):
 	seen_email_entry = [entry for entry in seen_email_data if entry['email_address'] == email_address]
 	if len(seen_email_entry) == 0:
 		assert email_data['has_attachment'] == False # something's gone wrong if there's an attachment on a previously unseen email address
-		ten_new_addresses(email_address, unused_addresses, seen_email_data)
+		unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data)
 	else:
 		if email_data['has_attachment']:
 			ten_new_addresses(email_address, unused_addresses, seen_email_data)
@@ -52,3 +53,5 @@ def handle_email(email_data, unused_addresses, seen_email_data):
 				handle_capitulation(email_address, unused_addresses, seen_email_data)
 			else:
 				send_to_manual_review(email_data)
+
+	return unused_addresses, seen_email_data
