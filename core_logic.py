@@ -2,13 +2,14 @@ import config
 #import gmail
 
 def ten_new_addresses(email_address, unused_addresses, seen_email_data):
+	assert len(unused_addresses) > 9
 	addresses_to_send = unused_addresses[:10]
 	del unused_addresses[:10]
 	#gmail.send_addresses_email()
 	for entry in seen_email_data:
 		if entry['email_address'] == email_address:
 			entry['sent_voter_addresses'].extend(addresses_to_send)
-			return
+			return unused_addresses, seen_email_data
 	
 	new_entry = {'email_address':email_address,'sent_voter_addresses':addresses_to_send}
 	seen_email_data.append(new_entry)
