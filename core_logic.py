@@ -39,10 +39,6 @@ def handle_capitulation(email_address, unused_addresses, seen_email_data):
 	return unused_addresses, seen_email_data
 
 
-def send_to_manual_review(email_data):
-	print('\n',"Got email from previous volunteer that did not have attachment and was not capitulation email:",'\n',email_data)
-
-
 def handle_email(email_data, unused_addresses, seen_email_data):
 	"""
 	: param email_data -> {'email_address':str, 'has_attachment':bool, 'text_content':str}
@@ -66,6 +62,6 @@ def handle_email(email_data, unused_addresses, seen_email_data):
 			if is_capitulation_text(email_data['text_content']):
 				unused_addresses, seen_email_data = handle_capitulation(email_address, unused_addresses, seen_email_data)
 			else:
-				send_to_manual_review(email_data)
+				logging.seen_email_no_attachment_no_capitulation(config.LOG_FILE_PATH, email_data)
 
 	return unused_addresses, seen_email_data
