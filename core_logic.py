@@ -1,5 +1,5 @@
 import config
-import logging
+import email_logging
 #import gmail
 
 
@@ -28,7 +28,8 @@ def handle_capitulation(email_address, unused_addresses, seen_email_data):
 		if entry['email_address'] == email_address:
 			
 			if len(entry['sent_voter_addresses']) < 10:
-				logging.invalid_capitulation(config.LOG_FILE_PATH, entry)
+				print("Invalid capitulation of " + email_address + "logged")
+				email_logging.invalid_capitulation(config.LOG_FILE_PATH, entry)
 				return
 
 			undone_addresses = entry['sent_voter_addresses'][-10:]
@@ -51,17 +52,22 @@ def handle_email(email_data, unused_addresses, seen_email_data):
 	if len(seen_email_entry) == 0:
 
 		if email_data['has_attachment']: # something's gone wrong if there's an attachment on a previously unseen email address
-			logging.attachment_on_unseen_email(config.LOG_FILE_PATH, email_data)
+			print("Attachment on unseen, logged")
+			email_logging.attachment_on_unseen_email(config.LOG_FILE_PATH, email_data)
 		else:
+			print("Sending 10 addresses to unseen email " + email_address)
 			unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data)
 
 	else:
 		if email_data['has_attachment']:
+			print("Sending 10 addresses to seen email " + email_address)
 			unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data)
 		else:
 			if is_capitulation_text(email_data['text_content']):
+				print("Handling capitulation of " + email_address)
 				unused_addresses, seen_email_data = handle_capitulation(email_address, unused_addresses, seen_email_data)
 			else:
-				logging.seen_email_no_attachment_no_capitulation(config.LOG_FILE_PATH, email_data)
+				print("Seen email w/no attach or capitulation logged")
+				email_logging.seen_email_no_attachment_no_capitulation(config.LOG_FILE_PATH, email_data)
 
 	return unused_addresses, seen_email_data
