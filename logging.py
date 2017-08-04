@@ -20,3 +20,8 @@ def attachment_on_unseen_email(log_file_path, email_data):
 def invalid_capitulation(log_file_path, seen_email_entry):
 	message = "Recieved capitulation from someone with fewer than 10 presumed sent addresses.\nTheir seen data:" + str(seen_email_entry)
 	log(log_file_path, message)
+
+
+def seen_email_no_attachment_no_capitulation(log_file_path, email_data):
+	message = "Got email from previous volunteer that did not have attachment and was not capitulation email.\nData: " + str(email_data)
+	log(log_file_path, message)
