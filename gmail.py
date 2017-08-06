@@ -88,3 +88,58 @@ def get_unread_email_data(client_secret_file_path, scopes, application_name):
         text_content = message_data['snippet']
         yield {'email_address':email_address, 'has_attachment':has_attachment, 'text_content':text_content}
 
+
+def create_message(sender, to, subject, message_text):
+    """Create a message for an email.
+
+    Args:
+    sender: Email address of the sender.
+    to: Email address of the receiver.
+    subject: The subject of the email message.
+    message_text: The text of the email message.
+
+    Returns:
+    An object containing a base64url encoded email object.
+    """
+    message = MIMEText(message_text)
+    message['to'] = to
+    message['from'] = sender
+    message['subject'] = subject
+    raw = base64.urlsafe_b64encode(message.as_bytes())
+    return {'raw':raw.decode()}
+
+
+def send_message(message, client):
+    """Send an email message.
+
+    Args:
+    client: Authorized Gmail API service instance.
+    user_id: User's email address. The special value "me"
+    can be used to indicate the authenticated user.
+    message: Message to be sent.
+
+    Returns:
+    Sent Message.
+    """
+    try:
+        message = (client.users().messages().send(userId='me', body=message).execute())
+        print('Message Id: %s' % message['id'])
+        return message
+    except errors.HttpError as error:
+        print('An error occurred: %s' % error)
+
+
+def send_addresses(sender, to, subject, addresses, intro_text, client):
+    message_text = intro_text + '\n\n' + str(addresses)
+    message = create_message(sender, to, subject, message_text)
+    send_message(message, client)
+
+
+def send_rejection(sender, to, subject, text, client):
+    message = create_message(sender, to, subject, text)
+    send_message(message, client)
+
+
+def send_email(host_email, recipient_email, email_subject, email_body, gmail_client):
+    message = create_message(host_email, recipient_email, email_subject, email_body)
+    send_message(message, gmail_client)
