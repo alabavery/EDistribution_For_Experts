@@ -129,13 +129,13 @@ def send_message(message, client):
         print('An error occurred: %s' % error)
 
 
-def send_addresses(sender, to, subject, addresses, intro_text, client):
+def send_addresses_email(sender, to, subject, addresses, intro_text, client):
     message_text = intro_text + '\n\n' + str(addresses)
     message = create_message(sender, to, subject, message_text)
     send_message(message, client)
 
 
-def send_rejection(sender, to, subject, text, client):
+def send_attachment_prompt(sender, to, subject, text, client):
     message = create_message(sender, to, subject, text)
     send_message(message, client)
 
