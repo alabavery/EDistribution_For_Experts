@@ -54,3 +54,37 @@ def get_gmail_client(client_secret_file_path, scopes, application_name):
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('gmail', 'v1', http=http)
     return service
+
+
+def get_unread_email_ids(gmail_client):
+    """
+    return list of id of unread emails
+    """
+    response = gmail_client.users().messages().list(userId='me',q='is:unread').execute()
+
+    if 'messages' in response: # messages key only exists if there are unread messages
+        return [message['id'] for message in response['messages']]
+    else:
+        print("No unread messages...")
+        return [] # still return a list since that's what caller expects
+
+
+def get_unread_email_data(client_secret_file_path, scopes, application_name):
+    gmail_client = get_gmail_client(client_secret_file_path, scopes, application_name)
+    unread_email_ids = get_unread_email_ids(gmail_client)
+
+    for message_id in unread_email_ids:
+        remove_unread_label = {'removeLabelIds': ['UNREAD']}
+        gmail_client.users().messages().modify(userId='me', id=message_id, body=remove_unread_label).execute()
+
+        message_data = gmail_client.users().messages().get(userId='me',id=message_id).execute()
+        message_payload = message_data['payload']
+
+        has_attachment = 0 < len([part for part in message_payload['parts'] if part['mimeType'] == 'image/jpeg'])
+        
+        message_headers = message_payload['headers']
+        email_address = [header['value'] for header in message_headers if header['name'] == 'Return-Path'][0]
+        #coded_text_content = message_payload['parts'][0]['data']
+        text_content = message_data['snippet']
+        yield {'email_address':email_address, 'has_attachment':has_attachment, 'text_content':text_content}
+
