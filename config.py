@@ -8,8 +8,8 @@ APPLICATION_NAME = 'TellOnKlein'
 APPLICATION_EMAIL = 'tellonklein@gmail.com'
 
 NEW_ADDRESSES_SUBJECT = "Your Mailing Addresses"
-REJECTION_SUBJECT = "Sorry"
+ATTACHMENT_PROMPT_SUBJECT = "Sorry"
 NEW_ADDRESSES_TEXT = "Here are 10 addresses:"
-REJECTION_TEXT = "You have not sent an image of a postcard since receiving ten addresses previously."
+ATTACHMENT_PROMPT_TEXT = "You have not sent an image of a postcard since receiving ten addresses previously."
 
 CAPITULATION_TEXT = "code red"
