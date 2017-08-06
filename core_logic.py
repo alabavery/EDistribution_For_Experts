@@ -19,7 +19,10 @@ def ten_new_addresses(email_address, unused_addresses, seen_email_data):
 
  
 def is_capitulation_text(text_content):
-	return text_content == config.CAPITULATION_TEXT
+	for permutation in ['code red', 'codered', 'code-red']:
+		if permutation in text_content.lower():
+			return True
+	return False
 
 
 def handle_capitulation(email_address, unused_addresses, seen_email_data):
