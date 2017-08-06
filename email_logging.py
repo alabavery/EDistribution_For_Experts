@@ -25,3 +25,8 @@ def invalid_capitulation(log_file_path, seen_email_entry):
 def seen_email_no_attachment_no_capitulation(log_file_path, email_data):
 	message = "Got email from previous volunteer that did not have attachment and was not capitulation email.\nData: " + str(email_data)
 	log(log_file_path, message)
+
+
+def capitulation_from_unseen_email(log_file_path. email_data):
+	message = "Got email from unseen volunteer with capitulation text.\nData: " + str(email_data)
+	log(log_file_path, message)

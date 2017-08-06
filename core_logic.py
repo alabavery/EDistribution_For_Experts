@@ -4,7 +4,6 @@ import email_logging
 
 
 def ten_new_addresses(email_address, unused_addresses, seen_email_data):
-	assert len(unused_addresses) > 9
 	addresses_to_send = unused_addresses[:10]
 	del unused_addresses[:10]
 	
@@ -64,6 +63,9 @@ def handle_email(email_data, unused_addresses, seen_email_data):
 		if email_data['has_attachment']: # something's gone wrong if there's an attachment on a previously unseen email address
 			print("Attachment on unseen, logged")
 			email_logging.attachment_on_unseen_email(config.LOG_FILE_PATH, email_data)
+		elif is_capitulation_text(email_data['text_content']):
+			print("capitulation from unseen, logged")
+			email_logging.capitulation_from_unseen_email(config.LOG_FILE_PATH, email_data)
 		else:
 			print("Sending 10 addresses to unseen email " + email_address)
 			unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data)
