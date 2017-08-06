@@ -7,7 +7,14 @@ def ten_new_addresses(email_address, unused_addresses, seen_email_data):
 	assert len(unused_addresses) > 9
 	addresses_to_send = unused_addresses[:10]
 	del unused_addresses[:10]
-	#gmail.send_addresses_email()
+	
+	gmail.send_addresses_email(config.APPLICATION_EMAIL, 
+								email_address,
+								config.NEW_ADDRESSES_SUBJECT, 
+								addresses_to_send,
+								config.NEW_ADDRESSES_TEXT,
+								gmail_client)
+
 	for entry in seen_email_data:
 		if entry['email_address'] == email_address:
 			entry['sent_voter_addresses'].extend(addresses_to_send)
@@ -26,7 +33,7 @@ def is_capitulation_text(text_content):
 
 
 def handle_capitulation(email_address, unused_addresses, seen_email_data):
-	# gmail.send_capitulation_response(email_address)
+	#gmail.send_capitulation_response(email_address)
 	for entry in seen_email_data:
 		if entry['email_address'] == email_address:
 			
@@ -71,6 +78,11 @@ def handle_email(email_data, unused_addresses, seen_email_data):
 				unused_addresses, seen_email_data = handle_capitulation(email_address, unused_addresses, seen_email_data)
 			else:
 				print("Seen email w/no attach or capitulation logged")
+				gmail.send_attachment_prompt(config.APPLICATION_EMAIL, 
+								email_address,
+								config.ATTACHMENT_PROMPT_SUBJECT, 
+								config.ATTACHMENT_PROMPT_TEXT,
+								gmail_client)
 				email_logging.seen_email_no_attachment_no_capitulation(config.LOG_FILE_PATH, email_data)
 
 	return unused_addresses, seen_email_data
