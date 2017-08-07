@@ -1,9 +1,9 @@
 import config
 import email_logging
-#import gmail
+import gmail
 
 
-def ten_new_addresses(email_address, unused_addresses, seen_email_data):
+def ten_new_addresses(email_address, unused_addresses, seen_email_data, gmail_client):
 	addresses_to_send = unused_addresses[:10]
 	del unused_addresses[:10]
 	
@@ -31,8 +31,12 @@ def is_capitulation_text(text_content):
 	return False
 
 
-def handle_capitulation(email_address, unused_addresses, seen_email_data):
-	#gmail.send_capitulation_response(email_address)
+def handle_capitulation(email_address, unused_addresses, seen_email_data, gmail_client):
+	gmail.send_email(config.APPLICATION_EMAIL, 
+					email_address,
+					config.CAPITULATION_RESPONSE_SUBJECT, 
+					config.CAPITULATION_RESPONSE_TEXT,
+					gmail_client)
 	for entry in seen_email_data:
 		if entry['email_address'] == email_address:
 			
@@ -50,7 +54,7 @@ def handle_capitulation(email_address, unused_addresses, seen_email_data):
 	return unused_addresses, seen_email_data
 
 
-def handle_email(email_data, unused_addresses, seen_email_data):
+def handle_email(email_data, unused_addresses, seen_email_data, gmail_client):
 	"""
 	: param email_data -> {'email_address':str, 'has_attachment':bool, 'text_content':str}
 	: param unused_addresses -> [str]
@@ -69,7 +73,7 @@ def handle_email(email_data, unused_addresses, seen_email_data):
 			email_logging.capitulation_from_unseen_email(config.LOG_FILE_PATH, email_data)
 		else:
 			print("Sending 10 addresses to unseen email " + email_address)
-			unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data)
+			unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data, gmail_client)
 
 	else:
 		entry = seen_email_entry[0]
@@ -80,19 +84,19 @@ def handle_email(email_data, unused_addresses, seen_email_data):
 				email_logging.invalid_from_inactive_email(config.LOG_FILE_PATH, email_data)
 			else:
 				print("Sending 10 addresses to previously capitulated email " + email_address)
-				unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data)
+				unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data, gmail_client)
 				entry['active'] = 'y'
 
 		else:
 			if is_capitulation_text(email_data['text_content']):
 				print("Handling capitulation of " + email_address)
-				unused_addresses, seen_email_data = handle_capitulation(email_address, unused_addresses, seen_email_data)
+				unused_addresses, seen_email_data = handle_capitulation(email_address, unused_addresses, seen_email_data, gmail_client)
 			elif email_data['has_attachment']:
 				print("Sending 10 addresses to seen email " + email_address)
-				unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data)
+				unused_addresses, seen_email_data = ten_new_addresses(email_address, unused_addresses, seen_email_data, gmail_client)
 			else:
-				print("Seen email w/no attach or capitulation logged")
-				gmail.send_attachment_prompt(config.APPLICATION_EMAIL, 
+				print("Seen email w/no attach or capitulation logged. Attachment request sent.")
+				gmail.send_email(config.APPLICATION_EMAIL, 
 								email_address,
 								config.ATTACHMENT_PROMPT_SUBJECT, 
 								config.ATTACHMENT_PROMPT_TEXT,
