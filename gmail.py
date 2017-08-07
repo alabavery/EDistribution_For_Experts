@@ -130,13 +130,9 @@ def send_message(message, client):
 
 
 def send_addresses_email(sender, to, subject, addresses, intro_text, client):
-    message_text = intro_text + '\n\n' + str(addresses)
+    addresses_str = '\n'.join(addresses)
+    message_text = intro_text + '\n\n' + addresses_str
     message = create_message(sender, to, subject, message_text)
-    send_message(message, client)
-
-
-def send_attachment_prompt(sender, to, subject, text, client):
-    message = create_message(sender, to, subject, text)
     send_message(message, client)
 
 
