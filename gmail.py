@@ -10,6 +10,7 @@ from email.mime.text import MIMEText
 import base64
 
 import config
+from random import choice
 
 
 def get_credentials(client_secret_file_path, scopes, application_name):
@@ -131,7 +132,7 @@ def send_message(message, client):
 
 def send_addresses_email(sender, to, subject, addresses, intro_text, client):
     addresses_str = '\n'.join(addresses)
-    message_text = intro_text + '\n\n' + addresses_str
+    message_text = intro_text + addresses_str
     message = create_message(sender, to, subject, message_text)
     send_message(message, client)
 
