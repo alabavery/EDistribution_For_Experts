@@ -20,13 +20,10 @@ new_email_data = gmail.get_unread_email_data(config.CLIENT_SECRET_FILE_NAME, con
 
 core_logic.email_logging.clear_log(config.LOG_FILE_PATH)
 
-# new_email_data = []
-# for simulated_email in range(20):
-# 	new_email_data.append(testing.generate_email_data())
-
+gmail_client = gmail.get_gmail_client(config.CLIENT_SECRET_FILE_NAME, config.SCOPES, config.APPLICATION_NAME)
 
 for email_data in new_email_data:
-	unused_addresses, seen_email_data = core_logic.handle_email(email_data, unused_addresses, seen_email_data)
+	unused_addresses, seen_email_data = core_logic.handle_email(email_data, unused_addresses, seen_email_data, gmail_client)
 	if not check_continue_conditions(unused_addresses): # check that unused_addresses is > 9, wifi connected, etc.
 		break
 
