@@ -64,7 +64,9 @@ def get_unread_email_ids(gmail_client):
     response = gmail_client.users().messages().list(userId='me',q='is:unread').execute()
 
     if 'messages' in response: # messages key only exists if there are unread messages
-        return [message['id'] for message in response['messages']]
+        ids = [message['id'] for message in response['messages']]
+        ids.reverse() # ids comes most to least recent; we want vice versa
+        return ids
     else:
         print("No unread messages...")
         return [] # still return a list since that's what caller expects
@@ -75,6 +77,7 @@ def get_unread_email_data(client_secret_file_path, scopes, application_name):
     unread_email_ids = get_unread_email_ids(gmail_client)
 
     for message_id in unread_email_ids:
+        print(message_id)
         remove_unread_label = {'removeLabelIds': ['UNREAD']}
         gmail_client.users().messages().modify(userId='me', id=message_id, body=remove_unread_label).execute()
 
@@ -85,7 +88,7 @@ def get_unread_email_data(client_secret_file_path, scopes, application_name):
         
         message_headers = message_payload['headers']
         email_address = [header['value'] for header in message_headers if header['name'] == 'Return-Path'][0]
-        #coded_text_content = message_payload['parts'][0]['data']
+
         text_content = message_data['snippet']
         yield {'email_address':email_address, 'has_attachment':has_attachment, 'text_content':text_content}
 
@@ -105,7 +108,8 @@ def create_message(sender, to, subject, message_text):
     message = MIMEText(message_text)
     message['to'] = to
     message['from'] = sender
-    message['subject'] = subject
+    message['subject'] = 'Hello'
+    message['threadId'] = '15dbfb0bc47bcd93'
     raw = base64.urlsafe_b64encode(message.as_bytes())
     return {'raw':raw.decode()}
 
