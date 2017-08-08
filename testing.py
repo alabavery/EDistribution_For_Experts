@@ -4,10 +4,6 @@ from config import *
 import random
 
 
-# unused_addresses = get_json_data("Batch1 - Two Votes.json")
-# seen_email_data = []
-
-
 def make_an_email(address, attach, txt):
 	 return {'email_address':address,'has_attachment':attach,'text_content':txt}
 
