@@ -5,7 +5,6 @@ import testing
 import gmail
 
 
-
 def check_continue_conditions(unused_addresses):
 	# check wifi
 	if len(unused_addresses) < 10:
