@@ -3,7 +3,7 @@ import email_logging
 import gmail
 
 
-def ten_new_addresses(email_address, unused_addresses, seen_email_data, gmail_client):
+def ten_new_addresses(email_address, unused_addresses, seen_email_data, gmail_client, email_data_string):
 	addresses_to_send = unused_addresses[:10]
 	del unused_addresses[:10]
 	
@@ -13,7 +13,7 @@ def ten_new_addresses(email_address, unused_addresses, seen_email_data, gmail_cl
 								addresses_to_send,
 								config.NEW_ADDRESSES_TEXT,
 								gmail_client, 
-								str(email_data))
+								email_data_string)
 
 	for entry in seen_email_data:
 		if entry['email_address'] == email_address:
