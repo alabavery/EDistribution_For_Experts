@@ -84,7 +84,7 @@ def get_unread_email_data(client_secret_file_path, scopes, application_name):
         message_data = gmail_client.users().messages().get(userId='me',id=message_id).execute()
         message_payload = message_data['payload']
 
-        has_attachment = 0 < len([part for part in message_payload['parts'] if part['mimeType'] == 'image/jpeg'])
+        has_attachment = 0 < len([part for part in message_payload['parts'] if part['mimeType'] == 'image/jpeg' or part['mimeType'] == 'image/png'])
         
         message_headers = message_payload['headers']
         email_address = [header['value'] for header in message_headers if header['name'] == 'Return-Path'][0]
