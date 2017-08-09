@@ -32,13 +32,13 @@ def is_capitulation_text(text_content):
 	return False
 
 
-def handle_capitulation(email_address, unused_addresses, seen_email_data, gmail_client):
+def handle_capitulation(email_address, unused_addresses, seen_email_data, gmail_client, email_data_string):
 	gmail.send_email(config.APPLICATION_EMAIL, 
 					email_address,
 					config.CAPITULATION_RESPONSE_SUBJECT, 
 					config.CAPITULATION_RESPONSE_TEXT,
 					gmail_client, 
-					str(email_data))
+					email_data_string)
 	for entry in seen_email_data:
 		if entry['email_address'] == email_address:
 			
