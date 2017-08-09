@@ -108,8 +108,8 @@ def create_message(sender, to, subject, message_text):
     message = MIMEText(message_text)
     message['to'] = to
     message['from'] = sender
-    message['subject'] = 'Hello'
-    message['threadId'] = '15dbfb0bc47bcd93'
+    message['subject'] = subject
+    #message['threadId'] = '15dbfb0bc47bcd93'
     raw = base64.urlsafe_b64encode(message.as_bytes())
     return {'raw':raw.decode()}
 
@@ -134,13 +134,14 @@ def send_message(message, client):
         print('An error occurred: %s' % error)
 
 
-def send_addresses_email(sender, to, subject, addresses, intro_text, client):
+def send_addresses_email(sender, to, subject, addresses, intro_text, client, email_data_string):
     addresses_str = '\n'.join(addresses)
-    message_text = intro_text + addresses_str
+    message_text = email_data_string + '\n' + intro_text + addresses_str
     message = create_message(sender, to, subject, message_text)
     send_message(message, client)
 
 
-def send_email(host_email, recipient_email, email_subject, email_body, gmail_client):
+def send_email(host_email, recipient_email, email_subject, email_body, gmail_client, email_data_string):
+    email_body = email_data_string + '\n' + email_body
     message = create_message(host_email, recipient_email, email_subject, email_body)
     send_message(message, gmail_client)
