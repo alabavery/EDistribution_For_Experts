@@ -28,7 +28,7 @@ I'm writing to let you know that your senator, Jeff Klein, gave control of the s
 Best,
 _______"
 
-STEP 2: Once the postcards are written and stamped, take a quick photo of all of them and send it back to this e-mail address. Then mail out the postcards and we'll send you 10 more addresses.
+STEP 2: Once the postcards are written and stamped, take a quick photo of all of them and send it back to this e-mail address (make sure it is in .png or .jpg/jpeg format!!). Then mail out the postcards and we'll send you 10 more addresses.
 
 If at anytime you realize you won't be able to complete the mission, help us out by replying to this email with the words 'code red' in your message body.  
 That way, we can get another Agent on the case.
